@@ -1,0 +1,91 @@
+{
+  "version": "2025-04-18-v2",
+  "fechaGeneracion": "2025-04-18T10:30:00.000Z",
+  "totalProductos": 12,
+  "productos": [
+    {
+      "id": 1,
+      "nombre": "Arroz 1kg",
+      "precio": 1250,
+      "stock": 20,
+      "categoria": "despensa"
+    },
+    {
+      "id": 2,
+      "nombre": "Leche Entera 1L",
+      "precio": 950,
+      "stock": 15,
+      "categoria": "lacteos"
+    },
+    {
+      "id": 3,
+      "nombre": "Pan Francés",
+      "precio": 550,
+      "stock": 30,
+      "categoria": "panaderia"
+    },
+    {
+      "id": 4,
+      "nombre": "Azúcar 1kg",
+      "precio": 850,
+      "stock": 12,
+      "categoria": "despensa"
+    },
+    {
+      "id": 5,
+      "nombre": "Café Molido 500g",
+      "precio": 2650,
+      "stock": 8,
+      "categoria": "bebidas"
+    },
+    {
+      "id": 6,
+      "nombre": "Aceite Girasol 900ml",
+      "precio": 1850,
+      "stock": 10,
+      "categoria": "despensa"
+    },
+    {
+      "id": 7,
+      "nombre": "Fideos Tirabuzón 500g",
+      "precio": 750,
+      "stock": 25,
+      "categoria": "despensa"
+    },
+    {
+      "id": 8,
+      "nombre": "Harina 000 1kg",
+      "precio": 650,
+      "stock": 18,
+      "categoria": "despensa"
+    },
+    {
+      "id": 9,
+      "nombre": "Yogurt Firme 200g",
+      "precio": 350,
+      "stock": 14,
+      "categoria": "lacteos"
+    },
+    {
+      "id": 10,
+      "nombre": "Gaseosa Cola 1.5L",
+      "precio": 1150,
+      "stock": 20,
+      "categoria": "bebidas"
+    },
+    {
+      "id": 11,
+      "nombre": "Detergente Líquido 500ml",
+      "precio": 1450,
+      "stock": 6,
+      "categoria": "limpieza"
+    },
+    {
+      "id": 12,
+      "nombre": "Jabón en Polvo 1kg",
+      "precio": 1850,
+      "stock": 4,
+      "categoria": "limpieza"
+    }
+  ]
+}

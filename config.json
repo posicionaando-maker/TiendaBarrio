@@ -1,0 +1,12 @@
+{
+  "appName": "Mi Tienda Barrio - Panel Empleado",
+  "version": "2.0.0",
+  "defaultJsonUrl": "https://ejemplo.com/productos.json",
+  "iva": 0.21,
+  "moneda": "$",
+  "companyInfo": {
+    "name": "Mi Tienda Barrio",
+    "phone": "+5491123456789",
+    "email": "tienda@example.com"
+  }
+}
