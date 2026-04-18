@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Panel Tienda - Empleado</title>
+    
+    <!-- PWA Meta -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2196F3">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="style-empleado.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar / Navegación -->
+        <nav class="sidebar">
+            <div class="logo">
+                <h2>🏪 MiTienda</h2>
+                <span class="version">v2.0</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-view="ventas">
+                    <span class="icon">💰</span>
+                    <span>Registrar Venta</span>
+                </li>
+                <li class="nav-item" data-view="inventario">
+                    <span class="icon">📦</span>
+                    <span>Inventario</span>
+                </li>
+                <li class="nav-item" data-view="historial">
+                    <span class="icon">📊</span>
+                    <span>Historial</span>
+                </li>
+                <li class="nav-item" data-view="actualizar">
+                    <span class="icon">🔄</span>
+                    <span>Actualizar Catálogo</span>
+                </li>
+                <li class="nav-item" data-view="reportes">
+                    <span class="icon">📈</span>
+                    <span>Reportes</span>
+                </li>
+            </ul>
+            <div class="user-info">
+                <div class="status">
+                    <span class="status-dot" id="syncStatus"></span>
+                    <span id="connectionText">Conectado</span>
+                </div>
+                <button id="logoutBtn" class="logout-btn">Cerrar Sesión</button>
+            </div>
+        </nav>
+
+        <!-- Contenido Principal -->
+        <main class="main-content">
+            <!-- Vista: Registrar Venta -->
+            <div id="ventasView" class="view active">
+                <div class="view-header">
+                    <h1>💰 Registrar Venta</h1>
+                    <div class="header-actions">
+                        <div class="search-box">
+                            <input type="text" id="productSearch" placeholder="🔍 Buscar producto...">
+                        </div>
+                <!-- <button id="scanBarcodeBtn" class="btn-icon">📷 Escanear</button>-->
+                    </div>
+                </div>
+
+                <div class="ventas-container">
+                    <!-- Lista de productos -->
+                    <div class="productos-section">
+                        <div class="section-title">
+                            <h3>Productos disponibles</h3>
+                            <span class="product-count" id="productCount">0 productos</span>
+                        </div>
+                        <div id="productsList" class="products-grid-empleado">
+                            <div class="loading">Cargando productos...</div>
+                        </div>
+                    </div>
+
+                    <!-- Carrito de venta -->
+                    <div class="cart-section">
+                        <div class="cart-header">
+                            <h3>🛒 Venta actual</h3>
+                            <button id="clearCartBtn" class="btn-clear-cart">Limpiar</button>
+                        </div>
+                        <div id="cartItems" class="cart-items-list">
+                            <p class="empty-cart">No hay productos agregados</p>
+                        </div>
+                        <div class="cart-summary">
+                            <div class="summary-row">
+                                <span>Subtotal:</span>
+                                <span id="subtotal">$0</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>IVA (21%):</span>
+                                <span id="iva">$0</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total:</span>
+                                <span id="total">$0</span>
+                            </div>
+                        </div>
+                        <div class="payment-section">
+                            <select id="paymentMethod" class="payment-select">
+                                <option value="efectivo">💵 Efectivo</option>
+                                <option value="transferencia">🏦 Transferencia</option>
+                                <option value="tarjeta">💳 Tarjeta</option>
+                                <option value="mercado pago">📱 Mercado Pago</option>
+                            </select>
+                            <button id="completeSaleBtn" class="btn-complete-sale">
+                                ✅ Completar Venta
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vista: Inventario -->
+            <div id="inventarioView" class="view">
+                <div class="view-header">
+                    <h1>📦 Gestión de Inventario</h1>
+                    <button id="exportInventoryBtn" class="btn-export">📊 Exportar</button>
+                </div>
+                
+                <div class="inventory-controls">
+                    <input type="text" id="inventorySearch" placeholder="Buscar producto..." class="search-input">
+                    <button id="addProductBtn" class="btn-primary">➕ Nuevo Producto</button>
+                </div>
+
+                <div class="inventory-table-container">
+                    <table class="inventory-table" id="inventoryTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Producto</th>
+                                <th>Precio</th>
+                                <th>Stock</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryBody">
+                            <tr><td colspan="6">Cargando productos...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Vista: Historial de Ventas -->
+            <div id="historialView" class="view">
+                <div class="view-header">
+                    <h1>📊 Historial de Ventas</h1>
+                    <div class="date-filters">
+                        <input type="date" id="startDate">
+                        <input type="date" id="endDate">
+                        <button id="filterSalesBtn" class="btn-filter">Filtrar</button>
+                    </div>
+                </div>
+
+                <div class="sales-stats">
+                    <div class="stat-card">
+                        <h4>Total Ventas</h4>
+                        <p id="totalSalesCount">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Monto Total</h4>
+                        <p id="totalSalesAmount">$0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Ticket Promedio</h4>
+                        <p id="avgTicket">$0</p>
+                    </div>
+                </div>
+
+                <div class="sales-table-container">
+                    <table class="sales-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fecha</th>
+                                <th>Productos</th>
+                                <th>Total</th>
+                                <th>Pago</th>
+                                <th>Detalle</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salesHistoryBody">
+                            <tr><td colspan="6">No hay ventas registradas</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Vista: Actualizar Catálogo -->
+            <div id="actualizarView" class="view">
+                <div class="view-header">
+                    <h1>🔄 Actualizar Catálogo</h1>
+                </div>
+
+                <div class="update-container">
+                    <!-- Configuración de fuente de datos -->
+                    <div class="update-card">
+                        <h3>📁 Fuente de Productos</h3>
+                        <p class="info-text">Los productos se actualizan desde un archivo JSON externo</p>
+                        
+                        <div class="config-group">
+                            <label>URL del archivo JSON:</label>
+                            <input type="text" id="jsonUrlInput" placeholder="https://tuservidor.com/productos.json" class="url-input">
+                            <button id="saveUrlBtn" class="btn-secondary">💾 Guardar URL</button>
+                        </div>
+
+                        <div class="current-source">
+                            <strong>Fuente actual:</strong>
+                            <code id="currentJsonUrl">No configurada</code>
+                        </div>
+                    </div>
+
+                    <!-- Información del catálogo actual -->
+                    <div class="update-card">
+                        <h3>📊 Información del Catálogo</h3>
+                        <div class="catalog-info">
+                            <div class="info-row">
+                                <span>Versión actual:</span>
+                                <strong id="currentVersion">-</strong>
+                            </div>
+                            <div class="info-row">
+                                <span>Última actualización:</span>
+                                <strong id="lastUpdate">-</strong>
+                            </div>
+                            <div class="info-row">
+                                <span>Total productos:</span>
+                                <strong id="totalProducts">0</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Acciones de actualización -->
+                    <div class="update-card">
+                        <h3>🔄 Acciones</h3>
+                        <div class="action-buttons">
+                            <button id="checkUpdateBtn" class="btn-primary btn-large">
+                                🔍 Verificar actualizaciones
+                            </button>
+                            <button id="forceUpdateBtn" class="btn-warning btn-large">
+                                ⬇️ Forzar actualización
+                            </button>
+                            <button id="exportLocalJsonBtn" class="btn-secondary btn-large">
+                                📤 Exportar JSON actual
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Log de actualizaciones -->
+                    <div class="update-card">
+                        <h3>📝 Registro de actualizaciones</h3>
+                        <div id="updateLog" class="update-log">
+                            <p class="log-entry">📅 Sistema iniciado</p>
+                        </div>
+                        <button id="clearLogBtn" class="btn-text">Limpiar log</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vista: Reportes -->
+            <div id="reportesView" class="view">
+                <div class="view-header">
+                    <h1>📈 Reportes Avanzados</h1>
+                </div>
+
+                <div class="reports-grid">
+                    <div class="report-card" data-report="daily">
+                        <div class="report-icon">📅</div>
+                        <h3>Reporte Diario</h3>
+                        <p>Ventas del día actual</p>
+                        <button class="btn-generate">Generar</button>
+                    </div>
+                    <div class="report-card" data-report="weekly">
+                        <div class="report-icon">📆</div>
+                        <h3>Reporte Semanal</h3>
+                        <p>Resumen de la semana</p>
+                        <button class="btn-generate">Generar</button>
+                    </div>
+                    <div class="report-card" data-report="monthly">
+                        <div class="report-icon">📊</div>
+                        <h3>Reporte Mensual</h3>
+                        <p>Análisis mensual</p>
+                        <button class="btn-generate">Generar</button>
+                    </div>
+                    <div class="report-card" data-report="products">
+                        <div class="report-icon">🏆</div>
+                        <h3>Top Productos</h3>
+                        <p>Más vendidos</p>
+                        <button class="btn-generate">Generar</button>
+                    </div>
+                    <div class="report-card" data-report="stock">
+                        <div class="report-icon">⚠️</div>
+                        <h3>Stock Bajo</h3>
+                        <p>Productos críticos</p>
+                        <button class="btn-generate">Generar</button>
+                    </div>
+                    <div class="report-card" data-report="export">
+                        <div class="report-icon">📎</div>
+                        <h3>Exportar Todo</h3>
+                        <p>Respaldo completo</p>
+                        <button class="btn-generate">Exportar</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal para editar producto -->
+    <div id="productModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Editar Producto</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editProductId">
+                <div class="form-group">
+                    <label>Nombre del producto:</label>
+                    <input type="text" id="editProductName" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>Precio ($):</label>
+                    <input type="number" id="editProductPrice" class="form-input" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>Stock:</label>
+                    <input type="number" id="editProductStock" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>Categoría:</label>
+                    <select id="editProductCategory" class="form-input">
+                        <option value="general">General</option>
+                        <option value="despensa">Despensa</option>
+                        <option value="lacteos">Lácteos</option>
+                        <option value="panaderia">Panadería</option>
+                        <option value="bebidas">Bebidas</option>
+                        <option value="limpieza">Limpieza</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="saveProductBtn" class="btn-primary">Guardar cambios</button>
+                <button id="deleteProductBtn" class="btn-danger">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificaciones -->
+    <div id="notification" class="notification hidden"></div>
+
+    <script src="app-empleado.js"></script>
+    
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('✅ SW registrado'))
+                .catch(err => console.error('Error SW:', err));
+        }
+    </script>
+</body>
+</html>
